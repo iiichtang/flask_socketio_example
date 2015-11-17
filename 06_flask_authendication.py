@@ -39,6 +39,7 @@ def requires_auth(f):
     return decorated
 
 
+# 127.0.0.1:5000/authendicate_test
 # curl -v -u "admin:secret" http://127.0.0.1:5000/authendicate_test
 @app.route('/authendicate_test')
 @requires_auth
