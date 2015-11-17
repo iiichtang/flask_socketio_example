@@ -43,9 +43,10 @@ def hello_world_json():
         resp.mimetype = 'application/json'
     else:
         resp.mimetype = 'text/plain'
+    """
 
     return resp
-    """
+
 
 
 # 127.0.0.1:5000/return_html
