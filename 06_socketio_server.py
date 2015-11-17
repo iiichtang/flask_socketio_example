@@ -68,7 +68,6 @@ def index():
 
 @socketio.on('my event', namespace='/test')
 def test_message(message):
-    print "my event"
     session['receive_count'] = session.get('receive_count', 0) + 1
     emit('my response',
          {'data': message['data'], 'count': session['receive_count']})
@@ -76,7 +75,6 @@ def test_message(message):
 
 @socketio.on('my broadcast event', namespace='/test')
 def test_broadcast_message(message):
-    print "broadcast event"
     session['receive_count'] = session.get('receive_count', 0) + 1
     emit('my response',
          {'data': message['data'], 'count': session['receive_count']},
@@ -85,7 +83,6 @@ def test_broadcast_message(message):
 
 @socketio.on('join', namespace='/test')
 def join(message):
-    print "join event"
     join_room(message['room'])
     session['receive_count'] = session.get('receive_count', 0) + 1
     emit('my response',
@@ -95,7 +92,6 @@ def join(message):
 
 @socketio.on('leave', namespace='/test')
 def leave(message):
-    print "leave event"
     leave_room(message['room'])
     session['receive_count'] = session.get('receive_count', 0) + 1
     emit('my response',
@@ -105,7 +101,6 @@ def leave(message):
 
 @socketio.on('close room', namespace='/test')
 def close(message):
-    print "close room event"
     session['receive_count'] = session.get('receive_count', 0) + 1
     emit('my response', {'data': 'Room ' + message['room'] + ' is closing.',
                          'count': session['receive_count']},
@@ -115,7 +110,6 @@ def close(message):
 
 @socketio.on('my room event', namespace='/test')
 def send_room_message(message):
-    print "my room event"
     session['receive_count'] = session.get('receive_count', 0) + 1
     emit('my response',
          {'data': message['data'], 'count': session['receive_count']},
@@ -124,7 +118,6 @@ def send_room_message(message):
 
 @socketio.on('disconnect request', namespace='/test')
 def disconnect_request():
-    print "disconnect event"
     session['receive_count'] = session.get('receive_count', 0) + 1
     emit('my response',
          {'data': 'Disconnected!', 'count': session['receive_count']})
@@ -133,7 +126,6 @@ def disconnect_request():
 
 @socketio.on('connect', namespace='/test')
 def test_connect():
-    print "connect event"
     emit('my response', {'data': 'Connected', 'count': 0})
 
 
@@ -142,30 +134,17 @@ def test_disconnect():
     print('Client disconnected', request.sid)
 
 
-@socketio.on('socketio client')
-def test_socketio_client(message):
-    print('test socketio client library')
-    print message['data']
-
-
 @app.route('/activity/<data>')
 def activity(data):
     print "activity route"
-    #global thread
-    #thread = Thread(target=test_activity)
-    #thread.daemon = True
-    #thread.start()
     test_activity(data)
-    return render_template('test.txt')
-
+    return "data: %s" % data
 
 
 def test_activity(data):
-    socketio.emit('my response',{'data': 'this event is called by app.route generated event', 'count': 999999},namespace='/test')
-
-
+    socketio.emit('my response', {'data': 'Someone just send data: %s via http request' % data, 'count': 999999},
+                  namespace='/test')
 
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=8599)
-
+    socketio.run(app, host='0.0.0.0', port=5000)
