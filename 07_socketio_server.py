@@ -8,6 +8,7 @@ async_mode = None
 if async_mode is None:
     try:
         import eventlet
+
         async_mode = 'eventlet'
     except ImportError:
         pass
@@ -15,6 +16,7 @@ if async_mode is None:
     if async_mode is None:
         try:
             from gevent import monkey
+
             async_mode = 'gevent'
         except ImportError:
             pass
@@ -28,9 +30,11 @@ if async_mode is None:
 # thread
 if async_mode == 'eventlet':
     import eventlet
+
     eventlet.monkey_patch()
 elif async_mode == 'gevent':
     from gevent import monkey
+
     monkey.patch_all()
 
 import time
@@ -134,6 +138,7 @@ def test_disconnect():
     print('Client disconnected', request.sid)
 
 
+# 127.0.0.1:5000/activity/testtesttest
 @app.route('/activity/<data>')
 def activity(data):
     print "activity route"
